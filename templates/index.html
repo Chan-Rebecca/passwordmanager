@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ username }}!</h1>
+        <h2>Your Passwords</h2>
+        <ul>
+            {% for password in passwords %}
+            <li>
+                <strong>{{ password.website }}</strong> ({{ password.username }})
+                <span>Password: {{ decrypt_data(password.password) }}</span>
+                <p>{{ password.additional_info }}</p>
+                <form action="/edit_password/{{ password.id }}" method="post">
+                    <input type="text" name="website" placeholder="Website" value="{{ password.website }}" required>
+                    <input type="text" name="username" placeholder="Username" value="{{ password.username }}" required>
+                    <input type="text" name="password" placeholder="Password" value="{{ decrypt_data(password.password) }}" required>
+                    <textarea name="additional_info" placeholder="Additional Info">{{ password.additional_info }}</textarea>
+                    <button type="submit">Save</button>
+                </form>
+                <a href="/delete_password/{{ password.id }}" onclick="return confirm('Are you sure you want to delete this password?')">Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <h2>Add New Password</h2>
+        <form action="/add_password" method="post">
+            <input type="text" name="website" placeholder="Website" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="password" placeholder="Password" required>
+            <textarea name="additional_info" placeholder="Additional Info"></textarea>
+            <button type="submit">Add</button>
+        </form>
+        <a href="/logout">Logout</a>
+    </div>
+</body>
+</html>
